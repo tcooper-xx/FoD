@@ -27,9 +27,71 @@
         android:layout_height="wrap_content"
         android:text="Choose a Date and tap 'Go'"
         android:id="@+id/tviewResults"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/goButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="155dp" />
+        android:layout_marginTop="47dp"
+        android:nestedScrollingEnabled="true"
+        android:paddingBottom="10dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tviewResults"
+        android:layout_centerHorizontal="true">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:id="@+id/tviewLocationLabel"
+                android:paddingEnd="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/tviewLocation" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sky"
+                android:id="@+id/tviewSkyLabel"
+                android:paddingEnd="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/tviewSky" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temp"
+                android:id="@+id/tviewTempLabel"
+                android:paddingEnd="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/tviewTemp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 
 </RelativeLayout>

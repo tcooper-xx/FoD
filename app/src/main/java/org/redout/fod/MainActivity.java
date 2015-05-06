@@ -6,9 +6,11 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,9 +19,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.redout.fod.openWeatherMap.CurrentCondition;
 import org.redout.solunarlib.RiseSetTransit;
 import org.redout.solunarlib.Solunar;
 import org.redout.solunarlib.SolunarFacade;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,6 +40,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private EditText fcstDateEtxt;
     private TextView resultsTview;
     private Button goButton;
+
+    private Double latitude;
+    private Double longitude;
 
     private DatePickerDialog fcstDatePickerDialog;
     private SimpleDateFormat dateFormatter;
@@ -86,7 +94,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            getCoords(view,c);
+            getCoords(view, c);
+            WeatherServiceParams param = new WeatherServiceParams();
+            param.setLatitude(latitude);
+            param.setLongitude(longitude);
+            new HttpRequestTask().execute(param);
         } else {
             System.out.println("Unknown Item: " + view.toString() );
         }
@@ -135,6 +147,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         } else {
             coords += "Lat: " + locationGPS.getLatitude() + " Lon: " + locationGPS.getLongitude();
         }
+        latitude = locationGPS.getLatitude();
+        longitude = locationGPS.getLongitude();
 
         Solunar data = getData(locationGPS.getLatitude(), locationGPS.getLongitude(), reportDate);
         RiseSetTransit rst = data.getSolRST();
@@ -169,5 +183,38 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private String formatDate(Calendar cal){
         SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy hh:mma z");
         return sdf.format(cal.getTime());
+    }
+
+    private class HttpRequestTask extends AsyncTask<WeatherServiceParams, Void, CurrentCondition> {
+        @Override
+        protected CurrentCondition doInBackground(WeatherServiceParams... params) {
+            int count = params.length;
+            for (int i =0; i< count; i++) {
+                WeatherServiceParams param = params[i];
+                try {
+                    final String url = "http://api.openweathermap.org/data/2.5/weather?lat=" + param.getLatitude() + "&lon=" + param.getLongitude();
+                    RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                    CurrentCondition cc = restTemplate.getForObject(url, CurrentCondition.class);
+                    return cc;
+                } catch (Exception e) {
+                    Log.e("MainActivity", e.getMessage(), e);
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(CurrentCondition cc) {
+            TextView locationText = (TextView) findViewById(R.id.tviewLocation);
+            TextView skyText = (TextView) findViewById(R.id.tviewSky);
+
+            locationText.setText(cc.getName());
+            skyText.setText(cc.getWeather().get(0).getDescription());
+            TextView tempText = (TextView) findViewById(R.id.tviewTemp);
+            tempText.setText(WeatherUtil.convertKtoF(cc.getMain().getTemp()).toString());
+        }
+
     }
 }
