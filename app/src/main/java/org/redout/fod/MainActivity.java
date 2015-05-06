@@ -211,9 +211,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             TextView skyText = (TextView) findViewById(R.id.tviewSky);
 
             locationText.setText(cc.getName());
-            skyText.setText(cc.getWeather().get(0).getDescription());
+            skyText.setText(cc.getWeather().get(0).getDescription() + cc.getWeather().get(0).getIcon());
             TextView tempText = (TextView) findViewById(R.id.tviewTemp);
-            tempText.setText(WeatherUtil.convertKtoF(cc.getMain().getTemp()).toString());
+            tempText.setText(WeatherUtil.convertKtoF(cc.getMain().getTemp()).toString() + "\u00B0 F");
+            MultiTool.setText((TextView) findViewById(R.id.tviewRH), cc.getMain().getHumidity() +  "%");
+            MultiTool.setText((TextView) findViewById(R.id.tviewBarometer), cc.getMain().getPressure() +  "mb");
+            MultiTool.setText((TextView) findViewById(R.id.tviewCloud), cc.getClouds().getAll() +  "%");
+            MultiTool.setText((TextView) findViewById(R.id.tviewWind), WeatherUtil.formatWind(cc.getWind()));
         }
 
     }
