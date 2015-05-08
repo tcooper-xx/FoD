@@ -2,6 +2,7 @@ package org.redout.fod;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.redout.fod.openWeatherMap.CurrentCondition;
@@ -209,6 +211,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         protected void onPostExecute(CurrentCondition cc) {
             TextView locationText = (TextView) findViewById(R.id.tviewLocation);
             TextView skyText = (TextView) findViewById(R.id.tviewSky);
+            String uri = "@drawable/wx" + cc.getWeather().get(0).getIcon();
+            System.out.println(uri);
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            ImageView iconImage = (ImageView) findViewById(R.id.iconImageView);
+            Drawable res = getResources().getDrawable(imageResource);
+            iconImage.setImageDrawable(res);
 
             locationText.setText(cc.getName());
             skyText.setText(cc.getWeather().get(0).getDescription() + cc.getWeather().get(0).getIcon());

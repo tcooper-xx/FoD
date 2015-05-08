@@ -58,6 +58,12 @@
                 android:text="99"
                 android:textSize="72dp"
                 android:id="@+id/tviewTemp" />
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="55dp"
+                android:id="@+id/iconImageView" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
